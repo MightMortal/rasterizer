@@ -49,7 +49,7 @@ int tga_image_save(TgaImage image_p, const char* path) {
 	header.image_w = image->width;
 	header.image_h = image->height;
 	header.image_bpp = 32;
-	header.image_descriptor = 0x10; // b00010000
+	header.image_descriptor = 0x00; // b00000000
 	TgaBasement basement;
 	memset(&basement, 0, sizeof(TgaBasement));
 	basement.magic_word[0] = 'T'; // "TRUEVISION-XFILE.";
@@ -92,9 +92,8 @@ int tga_image_save(TgaImage image_p, const char* path) {
 	return 0;
 }
 
-TgaImage tga_image_load(const char* path) {
+TgaImage tga_image_load(const char* path) { // TODO: Checking format
 	TgaHeader header;
-	TgaBasement basement;
 	FILE* f = fopen(path, "rb");
 	int out = fread(&header, sizeof(TgaHeader), 1, f);
 	if (out != 1) {

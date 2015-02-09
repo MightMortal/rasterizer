@@ -1,4 +1,5 @@
 #include "targa.h"
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -6,7 +7,7 @@
 typedef struct {
 	uint width;
 	uint height;
-	TgaColor* data;
+	Color* data;
 } TgaImageS;
 
 #pragma pack(push,1)
@@ -33,10 +34,10 @@ typedef struct {
 
 TgaImage tga_image_init(uint width, uint height) {
 	// TODO: Checking allocations
-	TgaImageS* image = malloc(sizeof(TgaImageS));
+	TgaImageS* image = (TgaImageS*)malloc(sizeof(TgaImageS));
 	image->height = height;
 	image->width = width;
-	image->data = calloc(height * width, sizeof(TgaColor));
+	image->data = (Color*)calloc(height * width, sizeof(Color));
 	return image;
 }
 
@@ -76,7 +77,7 @@ int tga_image_save(TgaImage image_p, const char* path) {
 		return -1; // TODO: Error codes.
 	}
 
-	out = fwrite(image->data, sizeof(TgaColor), image->width * image->height, f);
+	out = fwrite(image->data, sizeof(Color), image->width * image->height, f);
 	if (out != image->width * image->height) {
 		return -1; // TODO: Error codes.
 	}
@@ -99,8 +100,8 @@ TgaImage tga_image_load(const char* path) { // TODO: Checking format
 	if (out != 1) {
 		return NULL; // TODO: Error codes.
 	}
-	TgaImageS* image = tga_image_init(header.image_w, header.image_h);
-	out = fread(image->data, sizeof(TgaColor), image->width * image->height, f);
+	TgaImageS* image = (TgaImageS*)tga_image_init(header.image_w, header.image_h);
+	out = fread(image->data, sizeof(Color), image->width * image->height, f);
 	if (out != image->width * image->height) {
 		tga_image_close(image);
 		return NULL; // TODO: Error codes.
@@ -117,15 +118,15 @@ void tga_image_close(TgaImage image_p) {
 	free(image);
 }
 
-TgaColor tga_image_get_pixel(TgaImage image_p, uint x, uint y) {
+Color tga_image_get_pixel(TgaImage image_p, uint x, uint y) {
 	TgaImageS* image = (TgaImageS*)image_p;
 	if (x >= image->width || y >= image->height) {
-		return TGA_COLOR_ARGB(0x00, 0x00, 0x00, 0x00); // TODO: Print error
+		return 0x00000000; // TODO: Print error
 	}
 	return image->data[y * image->width + x];
 }
 
-int tga_image_set_pixel(TgaImage image_p, uint x, uint y, TgaColor color) {
+int tga_image_set_pixel(TgaImage image_p, uint x, uint y, Color color) {
 	TgaImageS* image = (TgaImageS*)image_p;
 	if (x >= image->width || y >= image->height) {
 		return -1; // TODO: Error codes.

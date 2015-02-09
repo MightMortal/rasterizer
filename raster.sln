@@ -7,10 +7,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "raster", "raster\raster.vcx
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug_MSVC|Win32 = Debug_MSVC|Win32
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03AFA076-B35E-45FF-BB47-1410ED1148F6}.Debug_MSVC|Win32.ActiveCfg = Debug_MSVC|Win32
+		{03AFA076-B35E-45FF-BB47-1410ED1148F6}.Debug_MSVC|Win32.Build.0 = Debug_MSVC|Win32
 		{03AFA076-B35E-45FF-BB47-1410ED1148F6}.Debug|Win32.ActiveCfg = Debug|Win32
 		{03AFA076-B35E-45FF-BB47-1410ED1148F6}.Debug|Win32.Build.0 = Debug|Win32
 		{03AFA076-B35E-45FF-BB47-1410ED1148F6}.Release|Win32.ActiveCfg = Release|Win32

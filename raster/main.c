@@ -1,13 +1,16 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "types.h"
 #include "targa.h"
 #include "asp_gl.h"
+#include "colors.h"
 
 int main(void) {
-	TgaImage image = tga_image_init(100, 100);
-	for (uint x = 0; x < 100; ++x) {
-		for (uint y = 0; y < 100; ++y) {
-			tga_image_set_pixel(image, x, y, TGA_COLOR_RGB(0x00, 0x00, 0x00));
+	const int width = 200, height = 200;
+	TgaImage image = tga_image_init(width, height);
+	for (uint x = 0; x < width; ++x) {
+		for (uint y = 0; y < height; ++y) {
+			tga_image_set_pixel(image, x, y, COLOR_BLACK);
 		}
 	}
 	asp_gl_draw_line(image, 13, 20, 80, 40, TGA_COLOR_RGB(0xFF, 0xFF, 0xFF));

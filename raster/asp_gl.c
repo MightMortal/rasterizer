@@ -48,7 +48,7 @@ void asp_gl_triangle(TgaImage image, Vec2i a, Vec2i b, Vec2i c, Color color) {
 	if (b.y > c.y) SWAP_VEC2I(b, c);
 	int xl, xr;
 	float alpha, beta;
-	for (int y = a.y; y <= c.y; y++) {
+	for (int y = a.y; y < c.y; y++) {
 		alpha = (float)(y - a.y) / (c.y - a.y);
 		xl = a.x + (int)((c.x - a.x) * alpha);
 		if (y < b.y) {

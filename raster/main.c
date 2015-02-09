@@ -4,33 +4,27 @@
 #include "targa.h"
 #include "asp_gl.h"
 #include "colors.h"
+#include "wave_object.h"
 
 int main(void) {
-	const int width = 200, height = 200;
+	const int width = 800, height = 800;
 	TgaImage image = tga_image_init(width, height);
 	for (uint x = 0; x < width; ++x) {
 		for (uint y = 0; y < height; ++y) {
 			tga_image_set_pixel(image, x, y, COLOR_BLACK);
 		}
 	}
-	Vec2i t0[3];
-	t0[0].x = 10; t0[0].y = 70;
-	t0[1].x = 50; t0[1].y = 160;
-	t0[2].x = 70; t0[2].y = 80;
-	
-	Vec2i t1[3];
-	t1[0].x = 180; t1[0].y = 50;
-	t1[1].x = 150; t1[1].y = 1;
-	t1[2].x = 70; t1[2].y = 180;
-	
-	Vec2i t2[3];
-	t2[0].x = 180; t2[0].y = 150;
-	t2[1].x = 120; t2[1].y = 160;
-	t2[2].x = 130; t2[2].y = 180;
-
-	asp_gl_triangle(image, t0[0], t0[1], t0[2], COLOR_RED);
-	asp_gl_triangle(image, t1[0], t1[1], t1[2], COLOR_WHITE);
-	asp_gl_triangle(image, t2[0], t2[1], t2[2], COLOR_GREEN);
+	WaveObject obj = wave_object_load("african_head.obj");
+	for (int i = 0; i < wave_object_get_face_count(obj); ++i) {
+		WaveObjectFace *face = wave_object_get_face(obj, i);
+		Vec3f *v1 = wave_object_get_vertex(obj, face->v[0]),
+			  *v2 = wave_object_get_vertex(obj, face->v[1]),
+			  *v3 = wave_object_get_vertex(obj, face->v[2]);
+		int x1 = (v1->x + 1.) * width / 2., x2 = (v2->x + 1.) * width / 2., x3 = (v3->x + 1.) * width / 2.;
+		int y1 = (v1->y + 1.) * height / 2., y2 = (v2->y + 1.) * height / 2., y3 = (v3->y + 1.) * height / 2.;
+		Vec2i a, b, c; a.x = x1; a.y = y1; b.x = x2; b.y = y2; c.x = x3; c.y = y3;
+		asp_gl_triangle(image, a, b, c, COLOR_RGB(rand() % 255, rand() % 255, rand() % 255));
+	}
 
 	tga_image_save(image, "test.tga");
 	system("pause");

@@ -94,6 +94,7 @@
     <ClCompile Include="list.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="targa.c" />
+    <ClCompile Include="wave_object.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="asp_gl.h" />
@@ -102,6 +103,7 @@
     <ClInclude Include="macro.h" />
     <ClInclude Include="targa.h" />
     <ClInclude Include="types.h" />
+    <ClInclude Include="wave_object.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

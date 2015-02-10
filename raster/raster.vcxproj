@@ -120,6 +120,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="asp_gl.c" />
+    <ClCompile Include="geometry.c" />
     <ClCompile Include="list.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="targa.c" />
@@ -128,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="asp_gl.h" />
     <ClInclude Include="colors.h" />
+    <ClInclude Include="geometry.h" />
     <ClInclude Include="list.h" />
     <ClInclude Include="macro.h" />
     <ClInclude Include="targa.h" />

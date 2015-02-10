@@ -92,8 +92,8 @@ Vec3f vec3f_muli(const Vec3f a, const int b) {
 
 Vec2i vec2i_mulf(const Vec2i a, const float b) {
 	Vec2i c;
-	c.x = a.x * b;
-	c.y = a.y * b;
+	c.x = (int)(a.x * b);
+	c.y = (int)(a.y * b);
 	return c;
 }
 
@@ -106,9 +106,9 @@ Vec2f vec2f_mulf(const Vec2f a, const float b) {
 
 Vec3i vec3i_mulf(const Vec3i a, const float b) {
 	Vec3i c;
-	c.x = a.x * b;
-	c.y = a.y * b;
-	c.z = a.z * b;
+	c.x = (int)(a.x * b);
+	c.y = (int)(a.y * b);
+	c.z = (int)(a.z * b);
 	return c;
 }
 

@@ -22,7 +22,7 @@ void asp_gl_draw_line(TgaImage image, int x0, int y0, int x1, int y1, Color colo
 
 	int dx = (x1 - x0);
 	int k = 2 * abs(y1 - y0);
-	int err = 0.0;
+	int err = 0;
 	int y = y0;
 	for (int x = x0; x <= x1; ++x) {
 		if (vert)

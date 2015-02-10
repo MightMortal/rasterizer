@@ -37,12 +37,12 @@ void dynlist_clear(DynList list_descriptor) {
 	list->size = 0;
 }
 
-DynListElement dynlist_get_element(DynList list_descriptor, int index) {
+DynListElement dynlist_get_element(DynList list_descriptor, uint index) {
 	DynListS* list = (DynListS*)list_descriptor;
 	if (index >= list->size) 
 		return NULL;
 	DynListElementS* element = list->head;
-	for (int i = 0; i < index; ++i) {
+	for (uint i = 0; i < index; ++i) {
 		element = element->next;
 	}
 	return element->data;
@@ -53,12 +53,12 @@ uint dynlist_size(DynList list_descriptor) {
 	return list->size;
 }
 
-void dynlist_set_element(DynList list_descriptor, int index, DynListElement new_element) {
+void dynlist_set_element(DynList list_descriptor, uint index, DynListElement new_element) {
 	DynListS* list = (DynListS*)list_descriptor;
 	if (index >= list->size)
 		return; // TODO: Write error
 	DynListElementS* element = list->head;
-	for (int i = 0; i < index; ++i) {
+	for (uint i = 0; i < index; ++i) {
 		element = element->next;
 	}
 	element->data = new_element;
@@ -90,7 +90,7 @@ void dynlist_remove(DynList list_descriptor, uint index) {
 	DynListElementS* for_delete = NULL;
 	if (index != 0) {
 		DynListElementS* prev_element = list->head;
-		for (int i = 0; i < index - 1; ++i) {
+		for (uint i = 0; i < index - 1; ++i) {
 			prev_element = prev_element->next;
 		}
 		for_delete = prev_element->next;

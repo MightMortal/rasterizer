@@ -5,6 +5,7 @@
 #include "asp_gl.h"
 #include "colors.h"
 #include "wave_object.h"
+#include "geometry.h"
 
 int main(void) {
 	const int width = 800, height = 800;
@@ -14,7 +15,11 @@ int main(void) {
 			tga_image_set_pixel(image, x, y, COLOR_BLACK);
 		}
 	}
-	WaveObject obj = wave_object_load("reconstructed_head.obj");
+	WaveObject obj = wave_object_load("african_head.obj");
+	Vec3f light_dir;
+	light_dir.x = 0.0;
+	light_dir.y = 0.0;
+	light_dir.z =-1.0;
 	for (uint i = 0; i < wave_object_get_face_count(obj); ++i) {
 		WaveObjectFace *face = wave_object_get_face(obj, i);
 		Vec3f *v1 = wave_object_get_vertex(obj, face->v[0]),
@@ -26,8 +31,12 @@ int main(void) {
 		int y1 = (int)((v1->y + 1.) * height / 2.),
 			y2 = (int)((v2->y + 1.) * height / 2.),
 			y3 = (int)((v3->y + 1.) * height / 2.);
+		Vec3f n = vec3f_cross(vec3f_sum(*v3, vec3f_neg(*v1)), vec3f_sum(*v2, vec3f_neg(*v1)));
+		n = vec3f_norm(n);
+		double light_intens = vec3f_dot(n, light_dir);
 		Vec2i a, b, c; a.x = x1; a.y = y1; b.x = x2; b.y = y2; c.x = x3; c.y = y3;
-		asp_gl_triangle(image, a, b, c, COLOR_RGB(rand() % 255, rand() % 255, rand() % 255));
+		if (light_intens > 0)
+			asp_gl_triangle(image, a, b, c, COLOR_RGB((int)(light_intens * 255), (int)(light_intens * 255), (int)(light_intens * 255)));
 	}
 
 	tga_image_save(image, "test.tga");

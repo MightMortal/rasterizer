@@ -12,6 +12,16 @@ Vec2f vec2f_neg(const Vec2f a);
 Vec3i vec3i_neg(const Vec3i a);
 Vec3f vec3f_neg(const Vec3f a);
 
+Vec2i vec2i_norm(const Vec2i a);
+Vec2f vec2f_norm(const Vec2f a);
+Vec3i vec3i_norm(const Vec3i a);
+Vec3f vec3f_norm(const Vec3f a);
+
+double vec2i_mod(const Vec2i a);
+double vec2f_mod(const Vec2f a);
+double vec3i_mod(const Vec3i a);
+double vec3f_mod(const Vec3f a);
+
 Vec2i vec2i_muli(const Vec2i a, const int b);
 Vec2f vec2f_muli(const Vec2f a, const int b);
 Vec3i vec3i_muli(const Vec3i a, const int b);

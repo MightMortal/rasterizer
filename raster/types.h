@@ -21,20 +21,12 @@ typedef struct {
 } Vec2i;
 
 typedef struct {
-	uint x, y;
-} Vec2u;
-
-typedef struct {
 	double x, y;
 } Vec2f;
 
 typedef struct {
 	int x, y, z;
 } Vec3i;
-
-typedef struct {
-	uint x, y, z;
-} Vec3u;
 
 typedef struct {
 	double x, y, z;

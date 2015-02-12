@@ -26,8 +26,20 @@ WaveObject wave_object_load(char* path) {
 		fscanf(f, "%s", buffer);
 		if (strcmp(buffer, "f") == 0) {
 			WaveObjectFace* ff = (WaveObjectFace*)malloc(sizeof(WaveObjectFace));
-			fscanf(f, "%d/%d/%d %d/%d/%d %d/%d/%d", &(ff->v[0]), &(ff->vt[0]), &(ff->vn[0]), 
-				&(ff->v[1]), &(ff->vt[1]), &(ff->vn[1]), &(ff->v[2]), &(ff->vt[2]), &(ff->vn[2]));
+			char buffer1[64], buffer2[64], buffer3[64];
+			fscanf(f, "%s %s %s", buffer1, buffer2, buffer3);
+			memset(ff->v, 0, sizeof(float)* 3);
+			memset(ff->vt, 0, sizeof(float)* 3);
+			memset(ff->vn, 0, sizeof(float)* 3);
+			if (strstr(buffer1, "//") != NULL) {
+				sscanf(buffer1, "%d//%d", &(ff->v[0]), &(ff->vn[0]));
+				sscanf(buffer2, "%d//%d", &(ff->v[1]), &(ff->vn[1]));
+				sscanf(buffer3, "%d//%d", &(ff->v[2]), &(ff->vn[2]));
+			} else {
+				sscanf(buffer1, "%d/%d/%d", &(ff->v[0]), &(ff->vt[0]), &(ff->vn[0]));
+				sscanf(buffer2, "%d/%d/%d", &(ff->v[1]), &(ff->vt[1]), &(ff->vn[1]));
+				sscanf(buffer3, "%d/%d/%d", &(ff->v[2]), &(ff->vt[2]), &(ff->vn[2]));
+			}
 			dynlist_push_back(obj->faces, ff);
 		} else if (strcmp(buffer, "v") == 0) {
 			Vec3f* v = (Vec3f*)malloc(sizeof(Vec3f));

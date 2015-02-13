@@ -1,4 +1,5 @@
 #include "geometry.h"
+
 #include <math.h>
 
 Vec2i vec2i_sum(const Vec2i a, const Vec2i b) {

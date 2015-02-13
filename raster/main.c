@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "types.h"
 #include "targa.h"
 #include "asp_gl.h"

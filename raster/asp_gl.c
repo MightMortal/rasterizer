@@ -12,14 +12,16 @@
 typedef struct TBufferS {
 	uint width;
 	uint height;
-	double* buffer;
+	int* buffer;
 } BufferS;
 
 Buffer asp_gl_init_z_buffer(TgaImage image) {
 	BufferS* buffer = (BufferS*)malloc(sizeof(BufferS));
 	tga_image_get_size(image, &(buffer->width), &(buffer->height));
-	buffer->buffer = (double*)calloc(buffer->width * buffer->height, sizeof(double));
-	memset(buffer->buffer, 0, sizeof(double) * buffer->width * buffer->height);
+	buffer->buffer = (int*)calloc(buffer->width * buffer->height, sizeof(int));
+	for (int i = 0; i < buffer->width * buffer->height; ++i) {
+		buffer->buffer[i] = INT_MIN;
+	}
 	return buffer;
 }
 

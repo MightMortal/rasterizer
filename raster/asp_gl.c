@@ -4,9 +4,32 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "macro.h"
 #include "colors.h"
+
+typedef struct TBufferS {
+	uint width;
+	uint height;
+	double* buffer;
+} BufferS;
+
+Buffer asp_gl_init_z_buffer(TgaImage image) {
+	BufferS* buffer = (BufferS*)malloc(sizeof(BufferS));
+	tga_image_get_size(image, &(buffer->width), &(buffer->height));
+	buffer->buffer = (double*)calloc(buffer->width * buffer->height, sizeof(double));
+	memset(buffer->buffer, 0, sizeof(double) * buffer->width * buffer->height);
+	return buffer;
+}
+
+void asp_gl_destroy_z_buffer(Buffer buffer_descripter) {
+	BufferS* buffer = (BufferS*)buffer_descripter;
+	buffer->width = 0;
+	buffer->height = 0;
+	free(buffer->buffer);
+	free(buffer);
+}
 
 void asp_gl_draw_line(TgaImage image, int x0, int y0, int x1, int y1, Color color) {
 	bool vert = false;

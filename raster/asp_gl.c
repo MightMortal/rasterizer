@@ -93,3 +93,45 @@ void asp_gl_triangle2D(TgaImage image, Vec2i t0, Vec2i t1, Vec2i t2, Color color
 		}
 	}
 }
+
+void asp_gl_triangle3D(TgaImage image, Vec3i t0, Vec3i t1, Vec3i t2, Color color, Buffer z_buffer_descriptor) {
+	if (t0.y == t1.y && t1.y == t2.y) return;
+	BufferS* z_buffer = (BufferS*)z_buffer_descriptor;
+	if (t0.y > t1.y) SWAP_VEC3I(t0, t1);
+	if (t0.y > t2.y) SWAP_VEC3I(t0, t2);
+	if (t1.y > t2.y) SWAP_VEC3I(t1, t2);
+	int xl, xr, zl, zr;
+	float alpha, beta;
+	for (int y = t0.y; y < t2.y; y++) {
+		alpha = (float)(y - t0.y) / (t2.y - t0.y);
+		xl = t0.x + (int)((t2.x - t0.x) * alpha);
+		zl = t0.z + (int)((t2.z - t0.z) * alpha);
+		if (y < t1.y) {
+			beta = (float)(y - t0.y) / (t1.y - t0.y);
+			xr = t0.x + (int)((t1.x - t0.x) * beta);
+			zr = t0.z + (int)((t1.z - t0.z) * beta);
+		}
+		else {
+			beta = (float)(y - t1.y) / (t2.y - t1.y);
+			xr = t1.x + (int)((t2.x - t1.x) * beta);
+			zr = t1.z + (int)((t2.z - t1.z) * beta);
+		}
+
+		if (xr < xl) {
+			SWAP_INT32(xl, xr);
+			SWAP_INT32(zl, zr);
+		}
+
+		for (int x = xl; x <= xr; x++) {
+			double phi = (xl == xr) ? 1. : (x - xl) / (xr - xl);
+			int z = (int)zl + (phi * (zr - zr));
+			if (x > z_buffer->width || x < 0 || y > z_buffer->height || y < 0)
+				continue;
+			if (z > z_buffer->buffer[x + y * z_buffer->width]) {
+				tga_image_set_pixel(image, x, y, color);
+				z_buffer->buffer[x + y * z_buffer->width] = z;
+			}
+			
+		}
+	}
+}

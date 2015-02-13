@@ -23,12 +23,12 @@ int main(void) {
 	light_dir.y = 0.0;
 	light_dir.z =-1.0;
 	for (uint i = 0; i < wave_object_get_face_count(obj); ++i) {
-		if (i % 10000 == 0)
+		if (i % 10000 == 0 && i != 0)
 			printf("drawed %d faces\n", i);
 		WaveObjectFace *face = wave_object_get_face(obj, i);
-		Vec3f *v1 = wave_object_get_vertex(obj, face->v[0]),
-			  *v2 = wave_object_get_vertex(obj, face->v[1]),
-			  *v3 = wave_object_get_vertex(obj, face->v[2]);
+		Vec3f *v1 = wave_object_get_v(obj, face->v[0]),
+			  *v2 = wave_object_get_v(obj, face->v[1]),
+			  *v3 = wave_object_get_v(obj, face->v[2]);
 		Vec3i vv1, vv2, vv3;
 		vv1.x = (int)((v1->x + 1.) * width  / 2.);
 		vv2.x = (int)((v2->x + 1.) * width  / 2.);

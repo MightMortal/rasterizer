@@ -8,8 +8,10 @@
 #include "list.h"
 
 typedef struct TWaveObjectS {
-	DynList vertices;
-	DynList faces;
+	DynList v;
+	DynList f;
+	DynList vn;
+	DynList vt;
 } WaveObjectS;
 
 WaveObject wave_object_load(char* path) {
@@ -18,8 +20,10 @@ WaveObject wave_object_load(char* path) {
 		return NULL;
 	}
 	WaveObjectS* obj = (WaveObjectS*)malloc(sizeof(WaveObjectS));
-	obj->vertices = dynlist_init();
-	obj->faces = dynlist_init();
+	obj->v = dynlist_init();
+	obj->vn = dynlist_init();
+	obj->vt = dynlist_init();
+	obj->f = dynlist_init();
 	char buffer[16];
 	fseek(f, 0, SEEK_END);
 	size_t file_size = ftell(f);
@@ -42,39 +46,69 @@ WaveObject wave_object_load(char* path) {
 				sscanf(buffer2, "%d/%d/%d", &(ff->v[1]), &(ff->vt[1]), &(ff->vn[1]));
 				sscanf(buffer3, "%d/%d/%d", &(ff->v[2]), &(ff->vt[2]), &(ff->vn[2]));
 			}
-			dynlist_push_back(obj->faces, ff);
+			dynlist_push_back(obj->f, ff);
 		} else if (strcmp(buffer, "v") == 0) {
 			Vec3f* v = (Vec3f*)malloc(sizeof(Vec3f));
 			fscanf(f, "%lf %lf %lf", &(v->x), &(v->y), &(v->z));
-			dynlist_push_back(obj->vertices, v);
+			dynlist_push_back(obj->v, v);
+		} else if (strcmp(buffer, "vt") == 0) {
+			Vec2f* v = (Vec2f*)malloc(sizeof(Vec2f));
+			fscanf(f, "%lf %lf", &(v->x), &(v->y));
+			dynlist_push_back(obj->vt, v);
+		} else if (strcmp(buffer, "vn") == 0) {
+			Vec3f* v = (Vec3f*)malloc(sizeof(Vec3f));
+			fscanf(f, "%lf %lf %lf", &(v->x), &(v->y), &(v->z));
+			dynlist_push_back(obj->vn, v);
 		}
 	}
 	fclose(f);
 	return obj;
 }
 
-Vec3f* wave_object_get_vertex(WaveObject obj_descriptor, uint index) {
+Vec3f* wave_object_get_v(WaveObject obj_descriptor, uint index) {
 	WaveObjectS* obj = (WaveObjectS*)obj_descriptor;
-	return ((Vec3f*)dynlist_get_element(obj->vertices, index - 1));
+	return ((Vec3f*)dynlist_get_element(obj->v, index - 1));
 }
 
-uint wave_object_get_vertex_count(WaveObject obj_descriptor) {
+uint wave_object_get_v_count(WaveObject obj_descriptor) {
 	WaveObjectS* obj = (WaveObjectS*)obj_descriptor;
-	return dynlist_size(obj->vertices);
+	return dynlist_size(obj->v);
+}
+
+Vec3f* wave_object_get_vn(WaveObject obj_descriptor, uint index) {
+	WaveObjectS* obj = (WaveObjectS*)obj_descriptor;
+	return ((Vec3f*)dynlist_get_element(obj->vn, index - 1));
+}
+
+uint wave_object_get_vn_count(WaveObject obj_descriptor) {
+	WaveObjectS* obj = (WaveObjectS*)obj_descriptor;
+	return dynlist_size(obj->vn);
+}
+
+Vec2f* wave_object_get_vt(WaveObject obj_descriptor, uint index) {
+	WaveObjectS* obj = (WaveObjectS*)obj_descriptor;
+	return ((Vec2f*)dynlist_get_element(obj->vt, index - 1));
+}
+
+uint wave_object_get_vt_count(WaveObject obj_descriptor) {
+	WaveObjectS* obj = (WaveObjectS*)obj_descriptor;
+	return dynlist_size(obj->vt);
 }
 
 WaveObjectFace* wave_object_get_face(WaveObject obj_descriptor, uint index) {
 	WaveObjectS* obj = (WaveObjectS*)obj_descriptor;
-	return ((WaveObjectFace*)dynlist_get_element(obj->faces, index));
+	return ((WaveObjectFace*)dynlist_get_element(obj->f, index));
 }
 
 uint wave_object_get_face_count(WaveObject obj_descriptor) {
 	WaveObjectS* obj = (WaveObjectS*)obj_descriptor;
-	return dynlist_size(obj->faces);
+	return dynlist_size(obj->f);
 }
 
 void wave_object_destroy(WaveObject obj_descriptor) {
 	WaveObjectS* obj = (WaveObjectS*)obj_descriptor;
-	dynlist_destroy(obj->vertices);
-	dynlist_destroy(obj->faces);
+	dynlist_destroy(obj->v);
+	dynlist_destroy(obj->vn);
+	dynlist_destroy(obj->vt);
+	dynlist_destroy(obj->f);
 }

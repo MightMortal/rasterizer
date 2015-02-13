@@ -64,22 +64,22 @@ void asp_gl_draw_line_vec(TgaImage image, Vec2i p0, Vec2i p1, Color color) {
 	asp_gl_draw_line(image, p0.x, p0.y, p1.x, p1.y, color);
 }
 
-void asp_gl_triangle(TgaImage image, Vec2i a, Vec2i b, Vec2i c, Color color) {
-	if (a.y == b.y && b.y == c.y) return;
-	if (a.y > b.y) SWAP_VEC2I(a, b);
-	if (a.y > c.y) SWAP_VEC2I(a, c);
-	if (b.y > c.y) SWAP_VEC2I(b, c);
+void asp_gl_triangle2D(TgaImage image, Vec2i t0, Vec2i t1, Vec2i t2, Color color) {
+	if (t0.y == t1.y && t1.y == t2.y) return;
+	if (t0.y > t1.y) SWAP_VEC2I(t0, t1);
+	if (t0.y > t2.y) SWAP_VEC2I(t0, t2);
+	if (t1.y > t2.y) SWAP_VEC2I(t1, t2);
 	int xl, xr;
 	float alpha, beta;
-	for (int y = a.y; y < c.y; y++) {
-		alpha = (float)(y - a.y) / (c.y - a.y);
-		xl = a.x + (int)((c.x - a.x) * alpha);
-		if (y < b.y) {
-			beta = (float)(y - a.y) / (b.y - a.y);
-			xr = a.x + (int)((b.x - a.x) * beta);
+	for (int y = t0.y; y < t2.y; y++) {
+		alpha = (float)(y - t0.y) / (t2.y - t0.y);
+		xl = t0.x + (int)((t2.x - t0.x) * alpha);
+		if (y < t1.y) {
+			beta = (float)(y - t0.y) / (t1.y - t0.y);
+			xr = t0.x + (int)((t1.x - t0.x) * beta);
 		} else {
-			beta = (float)(y - b.y) / (c.y - b.y);
-			xr = b.x + (int)((c.x - b.x) * beta);
+			beta = (float)(y - t1.y) / (t2.y - t1.y);
+			xr = t1.x + (int)((t2.x - t1.x) * beta);
 		}
 		
 		if (xr < xl) {

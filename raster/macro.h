@@ -12,4 +12,6 @@
 #define SWAP_VEC2F(a,b)  { Vec2f  t = a; a = b; b = t; }
 #define SWAP_VEC3F(a,b)  { Vec3f  t = a; a = b; b = t; }
 
+#define CLAMP(v,min,max) (v > max ? max : (v < min ? min : v))
+
 #endif // _MACRO_H_

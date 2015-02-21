@@ -120,6 +120,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="asp_gl.c" />
+    <ClCompile Include="colors.c" />
     <ClCompile Include="geometry.c" />
     <ClCompile Include="list.c" />
     <ClCompile Include="main.c" />

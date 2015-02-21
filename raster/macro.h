@@ -7,6 +7,8 @@
 #define SWAP_UINT8(a,b)  { uint8  t = a; a = b; b = t; }
 #define SWAP_UINT16(a,b) { uint16 t = a; a = b; b = t; }
 #define SWAP_UINT32(a,b) { uint32 t = a; a = b; b = t; }
+#define SWAP_FLOAT(a,b)  { float  t = a; a = b; b = t; }
+#define SWAP_DOUBLE(a,b) { double t = a; a = b; b = t; }
 #define SWAP_VEC2I(a,b)  { Vec2i  t = a; a = b; b = t; }
 #define SWAP_VEC3I(a,b)  { Vec3i  t = a; a = b; b = t; }
 #define SWAP_VEC2F(a,b)  { Vec2f  t = a; a = b; b = t; }

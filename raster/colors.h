@@ -1,6 +1,8 @@
 #ifndef _COLORS_H_
 #define _COLORS_H_
 
+#include "types.h"
+
 #define COLOR_ARGB(a,r,g,b) (((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b) & 0xFF))
 #define COLOR_RGB(r,g,b) (((0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b) & 0xFF))
 
@@ -14,5 +16,8 @@
 #define COLOR_MAGENTA (COLOR_RGB(0xFF, 0x00, 0xFF))
 #define COLOR_CYAN    (COLOR_RGB(0x00, 0xFF, 0xFF))
 #define COLOR_YELLOW  (COLOR_RGB(0xFF, 0xFF, 0x00))
+
+Color color_mix(Color col1, Color col2);
+Color color_mult(Color col1, double m);
 
 #endif // _COLORS_H_

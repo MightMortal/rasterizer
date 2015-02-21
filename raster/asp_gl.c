@@ -135,3 +135,74 @@ void asp_gl_triangle3D(TgaImage image, Vec3i t0, Vec3i t1, Vec3i t2, Color color
 		}
 	}
 }
+
+void asp_gl_triangle3D_textured(TgaImage image, Vec3i* v, Vec2f* vt, double intense, Buffer z_buffer_descriptor, TgaImage texture) {
+	if (v[0].y == v[1].y && v[1].y == v[2].y) return;
+	intense = CLAMP(intense, 0.0, 1.0);
+	BufferS* z_buffer = (BufferS*)z_buffer_descriptor;
+	if (v[0].y > v[1].y) {
+		SWAP_VEC3I(v[0], v[1]);
+		SWAP_VEC2F(vt[0], vt[1]);
+	}
+	if (v[0].y > v[2].y) {
+		SWAP_VEC3I(v[0], v[2]);
+		SWAP_VEC2F(vt[0], vt[2]);
+	}
+	if (v[1].y > v[2].y) {
+		SWAP_VEC3I(v[1], v[2]);
+		SWAP_VEC2F(vt[1], vt[2]);
+	}
+	int xl, xr, zl, zr;
+	Vec2f luv, ruv;
+	float alpha, beta;
+	for (int y = v[0].y; y < v[2].y; y++) {
+		alpha = (float)(y - v[0].y) / (v[2].y - v[0].y);
+		xl = v[0].x + (int)((v[2].x - v[0].x) * alpha);
+		zl = v[0].z + (int)((v[2].z - v[0].z) * alpha);
+
+		luv.x = vt[0].x + alpha * (vt[2].x - vt[0].x);
+		luv.y = vt[0].y + alpha * (vt[2].y - vt[0].y);
+
+		if (y < v[1].y) {
+			beta = (float)(y - v[0].y) / (v[1].y - v[0].y);
+			xr = v[0].x + (int)((v[1].x - v[0].x) * beta);
+			zr = v[0].z + (int)((v[1].z - v[0].z) * beta);
+
+			ruv.x = vt[0].x + beta * (vt[1].x - vt[0].x);
+			ruv.y = vt[0].y + beta * (vt[1].y - vt[0].y);
+		}
+		else {
+			beta = (float)(y - v[1].y) / (v[2].y - v[1].y);
+			xr = v[1].x + (int)((v[2].x - v[1].x) * beta);
+			zr = v[1].z + (int)((v[2].z - v[1].z) * beta);
+
+			ruv.x = vt[1].x + beta * (vt[2].x - vt[1].x);
+			ruv.y = vt[1].y + beta * (vt[2].y - vt[1].y);
+		}
+
+		if (xr < xl) {
+			SWAP_INT32(xl, xr);
+			SWAP_INT32(zl, zr);
+			SWAP_VEC2F(luv, ruv);
+		}
+
+		for (int x = xl; x <= xr; x++) {
+			double phi = (xl == xr) ? 1. : (double)(x - xl) / (xr - xl);
+			int z = zl + (int)(phi * (zr - zl));
+			Vec2f g;
+			g.x = luv.x + phi * (ruv.x - luv.x);
+			g.y = luv.y + phi * (ruv.y - luv.y);
+			if (x > z_buffer->width || x < 0 || y > z_buffer->height || y < 0)
+				continue;
+			if (z > z_buffer->buffer[x + y * z_buffer->width]) {
+				Vec2i texture_coord;
+				texture_coord.y = (int)(tga_image_get_width(texture) * g.y);
+				texture_coord.x = (int)(tga_image_get_height(texture) * g.x);
+				Color col = tga_image_get_pixel(texture, texture_coord.x, texture_coord.y);
+				// Color col = COLOR_RGB((int)(0xFF * intense), (int)(0xFF * intense), (int)(0xFF * intense));
+				tga_image_set_pixel(image, x, y, color_mult(col, intense));
+				z_buffer->buffer[x + y * z_buffer->width] = z;
+			}
+		}
+	}
+}

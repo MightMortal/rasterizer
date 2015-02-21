@@ -212,3 +212,57 @@ double vec3i_mod(const Vec3i a) {
 double vec3f_mod(const Vec3f a) {
 	return sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
 }
+
+Vec4f geom_mul_vec4f_mat4(const Vec4f v, const Mat4 mat) {
+	Vec4f result;
+	result.x = v.x * mat.v[0][0] + v.y * mat.v[0][1] + v.z * mat.v[0][2] + v.w * mat.v[0][3];
+	result.y = v.x * mat.v[1][0] + v.y * mat.v[1][1] + v.z * mat.v[1][2] + v.w * mat.v[1][3];
+	result.z = v.x * mat.v[2][0] + v.y * mat.v[2][1] + v.z * mat.v[2][2] + v.w * mat.v[2][3];
+	result.w = v.x * mat.v[3][0] + v.y * mat.v[3][1] + v.z * mat.v[3][2] + v.w * mat.v[3][3];
+	return result;
+}
+
+Vec3f geom_mul_vec3f_mat3(const Vec3f v, const Mat3 mat) {
+	Vec3f result;
+	result.x = v.x * mat.v[0][0] + v.y * mat.v[0][1] + v.z * mat.v[0][2];
+	result.y = v.x * mat.v[1][0] + v.y * mat.v[1][1] + v.z * mat.v[1][2];
+	result.z = v.x * mat.v[2][0] + v.y * mat.v[2][1] + v.z * mat.v[2][2];
+	return result;
+}
+
+Vec2f geom_mul_vec2f_mat2(const Vec2f v, const Mat2 mat) {
+	Vec2f result;
+	result.x = v.x * mat.v[0][0] + v.y * mat.v[0][1];
+	result.y = v.x * mat.v[1][0] + v.y * mat.v[1][1];
+	return result;
+}
+
+Mat4 geom_mul_mat4_mat4(const Mat4 mat1, const Mat4 mat2) {
+	Mat4 result;
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
+			result.v[i][j] = mat1.v[i][0] * mat2.v[0][j] + mat1.v[i][1] * mat2.v[1][j] + mat1.v[i][2] * mat2.v[2][j] + mat1.v[i][3] * mat2.v[3][j];
+		}
+	}
+	return result;
+}
+
+Mat3 geom_mul_mat3_mat3(const Mat3 mat1, const Mat3 mat2) {
+	Mat3 result;
+	for (int i = 0; i < 3; ++i) {
+		for (int j = 0; j < 3; ++j) {
+			result.v[i][j] = mat1.v[i][0] * mat2.v[0][j] + mat1.v[i][1] * mat2.v[1][j] + mat1.v[i][2] * mat2.v[2][j];
+		}
+	}
+	return result;
+}
+
+Mat2 geom_mul_mat2_mat2(const Mat2 mat1, const Mat2 mat2) {
+	Mat2 result;
+	for (int i = 0; i < 2; ++i) {
+		for (int j = 0; j < 2; ++j) {
+			result.v[i][j] = mat1.v[i][0] * mat2.v[0][j] + mat1.v[i][1] * mat2.v[1][j];
+		}
+	}
+	return result;
+}

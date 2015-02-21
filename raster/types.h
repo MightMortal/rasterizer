@@ -32,4 +32,24 @@ typedef struct {
 	double x, y, z;
 } Vec3f;
 
+typedef struct {
+	int x, y, z, w;
+} Vec4i;
+
+typedef struct {
+	double x, y, z, w;
+} Vec4f;
+
+typedef struct {
+	double v[2][2];
+} Mat2;
+
+typedef struct {
+	double v[3][3];
+} Mat3;
+
+typedef struct {
+	double v[4][4];
+} Mat4;
+
 #endif // _TYPES_H_

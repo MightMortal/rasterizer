@@ -1,11 +1,10 @@
-#include "wave_object.h"
+#include <io/wave_object.h>
 
-#define _CRT_SECURE_NO_WARNINGS
+#include <util/list.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "list.h"
 
 typedef struct TWaveObjectS {
 	DynList v;
@@ -17,6 +16,7 @@ typedef struct TWaveObjectS {
 WaveObject wave_object_load(char* path) {
 	FILE* f = fopen(path, "r");
 	if (!f) {
+		fprintf(stderr, "File not found file %s\n", path);
 		return NULL;
 	}
 	WaveObjectS* obj = (WaveObjectS*)malloc(sizeof(WaveObjectS));

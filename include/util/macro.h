@@ -1,6 +1,8 @@
 #ifndef  _MACRO_H_
 #define  _MACRO_H_
 
+#include "types.h"
+
 #define SWAP_INT8(a,b)   {  int8  t = a; a = b; b = t; }
 #define SWAP_INT16(a,b)  {  int16 t = a; a = b; b = t; }
 #define SWAP_INT32(a,b)  {  int32 t = a; a = b; b = t; }

@@ -1,7 +1,9 @@
 #ifndef _COLORS_H_
 #define _COLORS_H_
 
-#include "types.h"
+#include <util/types.h>
+
+typedef uint32 Color;
 
 #define COLOR_ARGB(a,r,g,b) (((a & 0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b) & 0xFF))
 #define COLOR_RGB(r,g,b) (((0xFF) << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b) & 0xFF))

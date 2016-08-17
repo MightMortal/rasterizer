@@ -1,6 +1,7 @@
-#include "targa.h"
+#include <io/targa.h>
 
-#define _CRT_SECURE_NO_WARNINGS
+#include <util/utils.h>
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -12,25 +13,26 @@ typedef struct {
 } TgaImageS;
 
 #pragma pack(push,1)
-typedef struct {
-	int8 id_long;
-	int8 color_map_type;
-	int8 image_type;
-	int16 color_map_ind;
-	int16 color_map_lng;
-	int8 color_map_size;
-	int16 image_off_x;
-	int16 image_off_y;
-	int16 image_w;
-	int16 image_h;
-	int8 image_bpp;
-	int8 image_descriptor;
-} TgaHeader;
-typedef struct {
-	int32 offset1;
-	int32 offset2;
-	char magic_word[18];
-} TgaBasement;
+	typedef struct {
+		int8 id_long;
+		int8 color_map_type;
+		int8 image_type;
+		int16 color_map_ind;
+		int16 color_map_lng;
+		int8 color_map_size;
+		int16 image_off_x;
+		int16 image_off_y;
+		int16 image_w;
+		int16 image_h;
+		int8 image_bpp;
+		int8 image_descriptor;
+	} TgaHeader;
+
+	typedef struct {
+		int32 offset1;
+		int32 offset2;
+		char magic_word[18];
+	} TgaBasement;
 #pragma pack(pop)
 
 TgaImage tga_image_init(uint width, uint height) {
@@ -75,16 +77,19 @@ int tga_image_save(TgaImage image_p, const char* path) {
 
 	int out = fwrite(&header, sizeof(TgaHeader), 1, f);
 	if (out != 1) {
+		fprintf(stderr, "Can't write file %s\n", path);
 		return -1; // TODO: Error codes.
 	}
 
 	out = fwrite(image->data, sizeof(Color), image->width * image->height, f);
 	if (out != image->width * image->height) {
+		fprintf(stderr, "Can't write file %s\n", path);
 		return -1; // TODO: Error codes.
 	}
 	
 	out = fwrite(&basement, sizeof(TgaBasement), 1, f);
 	if (out != 1) {
+		fprintf(stderr, "Can't write file %s\n", path);
 		return -1; // TODO: Error codes.
 	}
 
@@ -97,14 +102,21 @@ int tga_image_save(TgaImage image_p, const char* path) {
 TgaImage tga_image_load(const char* path) { // TODO: Checking format
 	TgaHeader header;
 	FILE* f = fopen(path, "rb");
+	if (!f) {
+		fprintf(stderr, "File not found file %s\n", path);
+		return NULL;
+	}
 	int out = fread(&header, sizeof(TgaHeader), 1, f);
 	if (out != 1) {
+		fprintf(stderr, "Can't read file %s\n", path);
 		return NULL; // TODO: Error codes.
 	}
 	TgaImageS* image = (TgaImageS*)tga_image_init(header.image_w, header.image_h);
 	out = fread(image->data, sizeof(Color), image->width * image->height, f);
 	if (out != image->width * image->height) {
 		tga_image_close(image);
+		fprintf(stderr, "File %s broken\n", path);
+		util_printStruct(&header, sizeof(TgaHeader));
 		return NULL; // TODO: Error codes.
 	}
 
@@ -122,6 +134,7 @@ void tga_image_close(TgaImage image_p) {
 Color tga_image_get_pixel(TgaImage image_p, uint x, uint y) {
 	TgaImageS* image = (TgaImageS*)image_p;
 	if (x >= image->width || y >= image->height) {
+		fprintf(stderr, "Coordinates (%ud;%ud) out of range\n", x, y);
 		return 0x00000000; // TODO: Print error
 	}
 	return image->data[y * image->width + x];
@@ -130,6 +143,7 @@ Color tga_image_get_pixel(TgaImage image_p, uint x, uint y) {
 int tga_image_set_pixel(TgaImage image_p, uint x, uint y, Color color) {
 	TgaImageS* image = (TgaImageS*)image_p;
 	if (x >= image->width || y >= image->height) {
+		fprintf(stderr, "Coordinates (%ud;%ud) out of range\n", x, y);
 		return -1; // TODO: Error codes.
 	}
 	image->data[y * image->width + x] = color;

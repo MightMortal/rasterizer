@@ -1,5 +1,6 @@
-#include "colors.h"
-#include "macro.h"
+#include <gl/colors.h>
+
+#include <util/macro.h>
 
 Color color_mix(Color col1, Color col2) {
 	uint8 col1a = ((col1 >> 24) & 0xFF);

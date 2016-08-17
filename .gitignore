@@ -191,3 +191,5 @@ FakesAssemblies/
 
 # Ignore all output images
 *.tga
+
+waf*

@@ -1,7 +1,7 @@
 #ifndef _TARGA_H_
 #define _TARGA_H_
 
-#include "types.h"
+#include <util/types.h>
 
 typedef void* TgaImage;
 

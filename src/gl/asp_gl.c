@@ -1,13 +1,15 @@
-#include "asp_gl.h"
+#include <gl/asp_gl.h>
+
+#include <gl/colors.h>
+
+#include <util/macro.h>
 
 #include <stdbool.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#include "macro.h"
-#include "colors.h"
+#include <limits.h>
 
 typedef struct TBufferS {
 	uint width;
@@ -199,10 +201,30 @@ void asp_gl_triangle3D_textured(TgaImage image, Vec3i* v, Vec2f* vt, double inte
 				texture_coord.y = (int)(tga_image_get_width(texture) * g.y);
 				texture_coord.x = (int)(tga_image_get_height(texture) * g.x);
 				Color col = tga_image_get_pixel(texture, texture_coord.x, texture_coord.y);
-				// Color col = COLOR_RGB((int)(0xFF * intense), (int)(0xFF * intense), (int)(0xFF * intense));
 				tga_image_set_pixel(image, x, y, color_mult(col, intense));
 				z_buffer->buffer[x + y * z_buffer->width] = z;
 			}
 		}
 	}
+}
+
+Mat4 asp_gl_init_space_matrix(double r) {
+	Mat4 space_matrix;
+	space_matrix.v[0][0] = 1; space_matrix.v[0][1] = 0; space_matrix.v[0][2] = 0   ; space_matrix.v[0][3] = 0;
+	space_matrix.v[1][0] = 0; space_matrix.v[1][1] = 1; space_matrix.v[1][2] = 0   ; space_matrix.v[1][3] = 0;
+	space_matrix.v[2][0] = 0; space_matrix.v[2][1] = 0; space_matrix.v[2][2] = 1   ; space_matrix.v[2][3] = 0;
+	space_matrix.v[3][0] = 0; space_matrix.v[3][1] = 0; space_matrix.v[3][2] = -1./r; space_matrix.v[3][3] = 1;
+	return space_matrix;
+}
+
+Vec3f aps_gl_perspective_projection(Vec3f v, Mat4 space_matrix) {
+	Vec4f homogeneous_vector = geom_vec3f_to_vec4f(v); // Translate to Homogeneous coordinates
+	homogeneous_vector = geom_mul_vec4f_mat4(homogeneous_vector, space_matrix); // Apply perspective transformation
+	return geom_vec4f_to_vec3f(homogeneous_vector); // Translate back to normal coordinates
+}
+
+double asp_gl_flat_light_intens(Vec3f* polygon, Vec3f light_dir) {
+	Vec3f n = geom_vec3f_cross(geom_vec3f_sum(polygon[2], geom_vec3f_neg(polygon[0])), geom_vec3f_sum(polygon[1], geom_vec3f_neg(polygon[0])));
+	n = geom_vec3f_norm(n);
+	return geom_vec3f_dot(n, light_dir);
 }

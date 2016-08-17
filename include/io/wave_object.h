@@ -1,6 +1,8 @@
 #ifndef _WAVE_OBJECT_H_
 #define _WAVE_OBJECT_H_
-#include "types.h"
+
+#include <util/types.h>
+#include <math/geometry.h>
 
 typedef void* WaveObject;
 

@@ -1,5 +1,6 @@
 #ifndef _DYN_LIST_H_
 #define _DYN_LIST_H_
+
 #include "types.h"
 
 typedef void* DynList;

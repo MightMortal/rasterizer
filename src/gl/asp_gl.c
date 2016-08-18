@@ -17,6 +17,8 @@ typedef struct TBufferS {
 	int* buffer;
 } BufferS;
 
+#define Z_BUFFER_RESOLUTION 255 // 2^32 (32 - sizeof of int in bits)
+
 Buffer asp_gl_init_z_buffer(TgaImage image) {
 	BufferS* buffer = (BufferS*)malloc(sizeof(BufferS));
 	tga_image_get_size(image, &(buffer->width), &(buffer->height));
@@ -208,18 +210,15 @@ void asp_gl_triangle3D_textured(TgaImage image, Vec3i* v, Vec2f* vt, double inte
 	}
 }
 
-Mat4 asp_gl_init_space_matrix(double r) {
-	Mat4 space_matrix;
-	space_matrix.v[0][0] = 1; space_matrix.v[0][1] = 0; space_matrix.v[0][2] = 0   ; space_matrix.v[0][3] = 0;
-	space_matrix.v[1][0] = 0; space_matrix.v[1][1] = 1; space_matrix.v[1][2] = 0   ; space_matrix.v[1][3] = 0;
-	space_matrix.v[2][0] = 0; space_matrix.v[2][1] = 0; space_matrix.v[2][2] = 1   ; space_matrix.v[2][3] = 0;
-	space_matrix.v[3][0] = 0; space_matrix.v[3][1] = 0; space_matrix.v[3][2] = -1./r; space_matrix.v[3][3] = 1;
+Mat4 asp_gl_get_space_matrix(double r) {
+	Mat4 space_matrix = geom_mat4_identity();
+	space_matrix.v[3][2] = -1./r;
 	return space_matrix;
 }
 
 Vec3f aps_gl_perspective_projection(Vec3f v, Mat4 space_matrix) {
 	Vec4f homogeneous_vector = geom_vec3f_to_vec4f(v); // Translate to Homogeneous coordinates
-	homogeneous_vector = geom_mul_vec4f_mat4(homogeneous_vector, space_matrix); // Apply perspective transformation
+	homogeneous_vector = geom_vec4f_mul_mat4(homogeneous_vector, space_matrix); // Apply perspective transformation
 	return geom_vec4f_to_vec3f(homogeneous_vector); // Translate back to normal coordinates
 }
 
@@ -227,4 +226,30 @@ double asp_gl_flat_light_intens(Vec3f* polygon, Vec3f light_dir) {
 	Vec3f n = geom_vec3f_cross(geom_vec3f_sum(polygon[2], geom_vec3f_neg(polygon[0])), geom_vec3f_sum(polygon[1], geom_vec3f_neg(polygon[0])));
 	n = geom_vec3f_norm(n);
 	return geom_vec3f_dot(n, light_dir);
+}
+
+Mat4 asp_gl_camera_look_at(Vec3f camera, Vec3f up, Vec3f position) {
+	Mat4 view_matrix = geom_mat4_identity();
+	Mat4 transform = geom_mat4_identity();
+	Vec3f vec_k = geom_vec3f_norm(geom_vec3f_sum(camera, geom_vec3f_neg(position)));
+	Vec3f vec_i = geom_vec3f_norm(geom_vec3f_cross(up, vec_k));
+	Vec3f vec_j = geom_vec3f_norm(geom_vec3f_cross(vec_k, vec_i));
+	view_matrix.v[0][0] = vec_i.x; view_matrix.v[1][0] = vec_j.x;  view_matrix.v[2][0] = vec_k.x;
+	view_matrix.v[0][1] = vec_i.y; view_matrix.v[1][1] = vec_j.y;  view_matrix.v[2][1] = vec_k.y;
+	view_matrix.v[0][2] = vec_i.z; view_matrix.v[1][2] = vec_j.z;  view_matrix.v[2][2] = vec_k.z;
+	transform.v[3][0] = position.x; transform.v[3][1] = position.y; transform.v[3][2] = position.z;
+	return geom_mat4_mul_mat4(view_matrix, transform);
+}
+
+Mat4 asp_gl_get_viewport_matrix(int x, int y, int w, int h) {
+	Mat4 viewport_matrix = geom_mat4_identity();
+	viewport_matrix.v[0][3] = x + w / 2.0;
+	viewport_matrix.v[1][3] = y + h / 2.0;
+	viewport_matrix.v[2][3] = Z_BUFFER_RESOLUTION / 2.0;
+
+	viewport_matrix.v[0][0] = w / 2.0;
+	viewport_matrix.v[1][1] = h / 2.0;
+	viewport_matrix.v[2][2] = Z_BUFFER_RESOLUTION / 2.0f;
+
+	return viewport_matrix;
 }

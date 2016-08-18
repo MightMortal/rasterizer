@@ -1,6 +1,7 @@
 #include <math/geometry.h>
 
 #include <math.h>
+#include <string.h>
 
 Vec2i geom_vec2i_sum(const Vec2i a, const Vec2i b) {
 	Vec2i c;
@@ -213,7 +214,7 @@ double geom_vec3f_mod(const Vec3f a) {
 	return sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
 }
 
-Vec4f geom_mul_vec4f_mat4(const Vec4f v, const Mat4 mat) {
+Vec4f geom_vec4f_mul_mat4(const Vec4f v, const Mat4 mat) {
 	Vec4f result;
 	result.x = v.x * mat.v[0][0] + v.y * mat.v[0][1] + v.z * mat.v[0][2] + v.w * mat.v[0][3];
 	result.y = v.x * mat.v[1][0] + v.y * mat.v[1][1] + v.z * mat.v[1][2] + v.w * mat.v[1][3];
@@ -222,7 +223,7 @@ Vec4f geom_mul_vec4f_mat4(const Vec4f v, const Mat4 mat) {
 	return result;
 }
 
-Vec3f geom_mul_vec3f_mat3(const Vec3f v, const Mat3 mat) {
+Vec3f geom_vec3f_mul_mat3(const Vec3f v, const Mat3 mat) {
 	Vec3f result;
 	result.x = v.x * mat.v[0][0] + v.y * mat.v[0][1] + v.z * mat.v[0][2];
 	result.y = v.x * mat.v[1][0] + v.y * mat.v[1][1] + v.z * mat.v[1][2];
@@ -230,14 +231,14 @@ Vec3f geom_mul_vec3f_mat3(const Vec3f v, const Mat3 mat) {
 	return result;
 }
 
-Vec2f geom_mul_vec2f_mat2(const Vec2f v, const Mat2 mat) {
+Vec2f geom_vec2f_mul_mat2(const Vec2f v, const Mat2 mat) {
 	Vec2f result;
 	result.x = v.x * mat.v[0][0] + v.y * mat.v[0][1];
 	result.y = v.x * mat.v[1][0] + v.y * mat.v[1][1];
 	return result;
 }
 
-Mat4 geom_mul_mat4_mat4(const Mat4 mat1, const Mat4 mat2) {
+Mat4 geom_mat4_mul_mat4(const Mat4 mat1, const Mat4 mat2) {
 	Mat4 result;
 	for (int i = 0; i < 4; ++i) {
 		for (int j = 0; j < 4; ++j) {
@@ -247,7 +248,7 @@ Mat4 geom_mul_mat4_mat4(const Mat4 mat1, const Mat4 mat2) {
 	return result;
 }
 
-Mat3 geom_mul_mat3_mat3(const Mat3 mat1, const Mat3 mat2) {
+Mat3 geom_mat3_mul_mat3(const Mat3 mat1, const Mat3 mat2) {
 	Mat3 result;
 	for (int i = 0; i < 3; ++i) {
 		for (int j = 0; j < 3; ++j) {
@@ -257,7 +258,7 @@ Mat3 geom_mul_mat3_mat3(const Mat3 mat1, const Mat3 mat2) {
 	return result;
 }
 
-Mat2 geom_mul_mat2_mat2(const Mat2 mat1, const Mat2 mat2) {
+Mat2 geom_mat2_mul_mat2(const Mat2 mat1, const Mat2 mat2) {
 	Mat2 result;
 	for (int i = 0; i < 2; ++i) {
 		for (int j = 0; j < 2; ++j) {
@@ -296,5 +297,32 @@ Vec2f geom_vec3f_to_vec2f(const Vec3f v) {
 	Vec2f result;
 	result.x = v.x / v.z;
 	result.y = v.y / v.z;
+	return result;
+}
+
+Mat2 geom_mat2_identity() {
+	Mat2 result;
+	memset(&result, 0, sizeof(result));
+	for (int i = 0; i < 2; i++) {
+		result.v[i][i] = 1;
+	}
+	return result;
+}
+
+Mat3 geom_mat3_identity() {
+	Mat3 result;
+	memset(&result, 0, sizeof(result));
+	for (int i = 0; i < 3; i++) {
+		result.v[i][i] = 1;
+	}
+	return result;
+}
+
+Mat4 geom_mat4_identity() {
+	Mat4 result;
+	memset(&result, 0, sizeof(result));
+	for (int i = 0; i < 4; i++) {
+		result.v[i][i] = 1;
+	}
 	return result;
 }
